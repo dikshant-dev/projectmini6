@@ -1,18 +1,11 @@
-# Ignore virtual environment except our scripts
-venv/*
-!venv/run_training.py
-!venv/train_selected_models.py
-
-# Python cache
+venv/
 __pycache__/
-*.pyc
-
-# Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
-# CatBoost auto-generated info
+# training artifacts
 catboost_info/
+*.zip
 
-# Ignore big data or model files (optional)
-*.pkl
-*.pdf
+# logs
+*.tsv
+*.out
