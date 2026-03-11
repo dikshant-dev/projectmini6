@@ -24,34 +24,7 @@ print("✅ Model Accuracy: 97.1%")
 def home():
     return render_template("index.html")
 
-TRUSTED_DOMAINS = [
-    "google.com",
-    "gmail.com",
-    "amazon.com",
-    "flipkart.com",
-    "instagram.com",
-    "linkedin.com",
-    "twitter.com",
-    "x.com",
-    "microsoft.com",
-    "windows.com",
-    "apple.com",
-    "icloud.com",
-    "nasa.gov",
-    "github.com",
-    "stackoverflow.com",
-    "netflix.com"
-]
 
-def is_trusted_domain(url):
-    try:
-        domain = urlparse(url).netloc.lower()
-        for trusted in TRUSTED_DOMAINS:
-            if trusted in domain:
-                return True
-        return False
-    except:
-        return False
 
 @app.route('/result', methods=['POST', 'GET'])
 def predict():
@@ -76,3 +49,4 @@ def usecases():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
