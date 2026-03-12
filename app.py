@@ -4,49 +4,55 @@ import warnings
 from convert import convertion
 from feature import FeatureExtraction
 import pickle
-from urllib.parse import urlparse
-
-
 
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
 
-# Load CatBoost model
+
 with open("newmodel.pkl", "rb") as f:
     model = pickle.load(f)
 
+print(" CatBoost model loaded successfully")
+print(" Model Accuracy: 97.1%")
 
-print("✅ CatBoost model loaded successfully")
-print("✅ Model Accuracy: 97.1%")
-
+# Home page
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-
-@app.route('/result', methods=['POST', 'GET'])
+# Prediction route
+@app.route('/result', methods=['POST'])
 def predict():
-    if request.method == "POST":
-        url = request.form["name"]
+    url = request.form["name"].strip()
 
-        if is_trusted_domain(url):
-            name = convertion(url, 1)
-            return render_template("index.html", name=name)
+    # Ensure URL has protocol
+    if not url.startswith(("http://", "https://")):
+        url = "http://" + url
 
+    try:
+        # Feature extraction
         obj = FeatureExtraction(url)
         x = np.array(obj.getFeaturesList()).reshape(1, 30)
-        y_pred = model.predict(x)[0]
 
-        name = convertion(url, int(y_pred))
-        return render_template("index.html", name=name)
+        # Model prediction
+        y_pred = int(model.predict(x)[0])
+
+        # Convert prediction to message
+        name = convertion(url, y_pred)
+
+    except Exception as e:
+        name = " Error processing URL. Please enter a valid website."
+
+    return render_template("index.html", name=name)
 
 
-@app.route('/usecases', methods=['GET', 'POST'])
+# Optional use-cases page
+@app.route('/usecases', methods=['GET'])
 def usecases():
     return render_template('usecases.html')
 
+
 if __name__ == "__main__":
     app.run(debug=True)
-
